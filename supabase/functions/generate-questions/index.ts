@@ -428,7 +428,7 @@ Include at least ${Math.max(2, Math.round(count * 0.3))} two-step problems and a
           user_id: userId,
           topic,
           category,
-          model: data.model || "google/gemini-2.5-flash",
+          model: data.model || "gemini-2.5-flash",
           input_tokens: usage.prompt_tokens || 0,
           output_tokens: usage.completion_tokens || 0,
           total_tokens: usage.total_tokens || 0,
