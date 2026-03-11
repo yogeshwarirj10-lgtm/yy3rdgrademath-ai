@@ -341,10 +341,10 @@ NUMBER THE QUESTIONS sequentially starting from 1.
 Return using the generate_questions tool.`;
 
     const makeRequest = async () => {
-      return await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      return await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          Authorization: `Bearer ${GEMINI_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
