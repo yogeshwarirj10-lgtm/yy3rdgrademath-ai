@@ -120,8 +120,8 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not configured");
 
     // Full Exam mode: generate ONE unit at a time to avoid timeout
     if (body.fullExam) {
@@ -184,14 +184,14 @@ Return using the generate_questions tool. Include the "type" and "points" fields
       const startId = body.startId || 1;
 
       const makeRequest = async () => {
-        return await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        return await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
           method: "POST",
           headers: {
-            Authorization: `Bearer ${LOVABLE_API_KEY}`,
+            Authorization: `Bearer ${GEMINI_API_KEY}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "google/gemini-2.5-flash",
+            model: "gemini-2.5-flash",
             max_tokens: 16000,
             messages: [
               { role: "system", content: systemPrompt },
@@ -341,14 +341,14 @@ NUMBER THE QUESTIONS sequentially starting from 1.
 Return using the generate_questions tool.`;
 
     const makeRequest = async () => {
-      return await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      return await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          Authorization: `Bearer ${GEMINI_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
+          model: "gemini-2.5-flash",
           max_tokens: 16000,
           messages: [
             { role: "system", content: systemPrompt },

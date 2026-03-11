@@ -131,8 +131,8 @@ serve(async (req) => {
     }
 
     const { topic, category, count = 20 } = await req.json();
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not configured");
 
     const standard = topicStandardsMap[topic] || "";
 
@@ -295,14 +295,14 @@ THE CORRECT ANSWER MUST BE MATHEMATICALLY VERIFIED AND ABSOLUTELY CORRECT. A WRO
 Return your response using the generate_questions tool.`;
 
     const makeRequest = async () => {
-      return await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      return await fetch("https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          Authorization: `Bearer ${GEMINI_API_KEY}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
+          model: "gemini-2.5-flash",
           max_tokens: 16000,
           messages: [
             { role: "system", content: systemPrompt },
@@ -428,7 +428,7 @@ Include at least ${Math.max(2, Math.round(count * 0.3))} two-step problems and a
           user_id: userId,
           topic,
           category,
-          model: data.model || "google/gemini-2.5-flash",
+          model: data.model || "gemini-2.5-flash",
           input_tokens: usage.prompt_tokens || 0,
           output_tokens: usage.completion_tokens || 0,
           total_tokens: usage.total_tokens || 0,
