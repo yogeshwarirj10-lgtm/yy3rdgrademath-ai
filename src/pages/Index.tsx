@@ -19,8 +19,29 @@ const Index = () => {
   const totalTopics = categories.reduce((sum, c) => sum + c.topics.length, 0);
   const studentName = user?.user_metadata?.student_name || "Student";
   const [activeTab, setActiveTab] = useState<"home" | "quiz" | "exam" | "activity">("home");
+  const [searchQuery, setSearchQuery] = useState("");
   const { totalTokens, remaining, usagePercent, limitReached, warningThreshold } = useTokenLimit();
   const [activityData, setActivityData] = useState<any[]>([]);
+
+  // Flatten all topics for search
+  const allTopics = useMemo(() => {
+    return categories.flatMap((cat) =>
+      cat.topics.map((topic) => ({
+        ...topic,
+        categoryName: cat.name,
+        categoryEmoji: cat.emoji,
+        categoryBg: cat.bgClass,
+      }))
+    );
+  }, []);
+
+  const filteredTopics = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const q = searchQuery.toLowerCase();
+    return allTopics.filter(
+      (t) => t.name.toLowerCase().includes(q) || t.categoryName.toLowerCase().includes(q)
+    );
+  }, [searchQuery, allTopics]);
 
   useEffect(() => {
     if (activeTab === "activity") {
