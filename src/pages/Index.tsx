@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { categories } from "@/data/topics";
 import CategoryCard from "@/components/CategoryCard";
 import {
   BookOpen, LayoutGrid, Target, FileText, LogOut, Zap,
   Home, Brain, BarChart3, Infinity, GraduationCap, Sparkles,
-  AlertTriangle, Mail
+  AlertTriangle, Mail, Search
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,8 +19,29 @@ const Index = () => {
   const totalTopics = categories.reduce((sum, c) => sum + c.topics.length, 0);
   const studentName = user?.user_metadata?.student_name || "Student";
   const [activeTab, setActiveTab] = useState<"home" | "quiz" | "exam" | "activity">("home");
+  const [searchQuery, setSearchQuery] = useState("");
   const { totalTokens, remaining, usagePercent, limitReached, warningThreshold } = useTokenLimit();
   const [activityData, setActivityData] = useState<any[]>([]);
+
+  // Flatten all topics for search
+  const allTopics = useMemo(() => {
+    return categories.flatMap((cat) =>
+      cat.topics.map((topic) => ({
+        ...topic,
+        categoryName: cat.name,
+        categoryEmoji: cat.emoji,
+        categoryBg: cat.bgClass,
+      }))
+    );
+  }, []);
+
+  const filteredTopics = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const q = searchQuery.toLowerCase();
+    return allTopics.filter(
+      (t) => t.name.toLowerCase().includes(q) || t.categoryName.toLowerCase().includes(q)
+    );
+  }, [searchQuery, allTopics]);
 
   useEffect(() => {
     if (activeTab === "activity") {
@@ -213,15 +234,55 @@ const Index = () => {
 
       {activeTab === "quiz" && (
         <main className="container py-6 max-w-3xl mx-auto">
-          <h2 className="text-lg font-bold text-foreground mb-1">Select a Category</h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            Choose a domain to explore topics and generate practice quizzes.
-          </p>
-          <div className="grid gap-3">
-            {categories.map((cat, i) => (
-              <CategoryCard key={cat.name} category={cat} index={i} />
-            ))}
+          {/* Search Bar */}
+          <div className="relative mb-5">
+            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search topics (e.g. Fractions, Angles, Division…)"
+              className="w-full rounded-xl border border-border bg-card pl-10 pr-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background"
+            />
           </div>
+
+          {/* Search Results */}
+          {searchQuery.trim() ? (
+            filteredTopics.length > 0 ? (
+              <div className="space-y-2">
+                <p className="text-xs text-muted-foreground mb-2">{filteredTopics.length} topic{filteredTopics.length !== 1 ? "s" : ""} found</p>
+                {filteredTopics.map((topic) => (
+                  <button
+                    key={topic.slug}
+                    onClick={() => navigate(`/topic/${topic.slug}`)}
+                    className="w-full flex items-center gap-3 rounded-xl border border-border bg-card hover:bg-muted/50 transition-colors p-4 text-left"
+                  >
+                    <span className={`${topic.categoryBg} flex items-center justify-center w-9 h-9 rounded-lg text-sm text-primary-foreground shrink-0`}>
+                      {topic.categoryEmoji}
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-foreground">{topic.name}</p>
+                      <p className="text-xs text-muted-foreground">{topic.categoryName}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-sm text-muted-foreground py-8">No topics match "{searchQuery}"</p>
+            )
+          ) : (
+            <>
+              <h2 className="text-lg font-bold text-foreground mb-1">Select a Category</h2>
+              <p className="text-sm text-muted-foreground mb-4">
+                Choose a domain to explore topics and generate practice quizzes.
+              </p>
+              <div className="grid gap-3">
+                {categories.map((cat, i) => (
+                  <CategoryCard key={cat.name} category={cat} index={i} />
+                ))}
+              </div>
+            </>
+          )}
         </main>
       )}
 
