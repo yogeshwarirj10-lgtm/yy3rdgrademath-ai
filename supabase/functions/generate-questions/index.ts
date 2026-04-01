@@ -428,17 +428,7 @@ Include at least ${Math.max(2, Math.round(count * 0.3))} two-step problems and a
           Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
         );
 
-        // Extract user_id from auth header if available
-        const authHeader = req.headers.get("authorization");
-        let userId = null;
-        if (authHeader) {
-          const supabaseUser = createClient(
-            Deno.env.get("SUPABASE_URL")!,
-            Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY")!
-          );
-          const { data: { user } } = await supabaseUser.auth.getUser(authHeader.replace("Bearer ", ""));
-          userId = user?.id || null;
-        }
+        // userId already extracted at the top of the request
 
         await supabaseAdmin.from("ai_token_usage").insert({
           user_id: userId,
