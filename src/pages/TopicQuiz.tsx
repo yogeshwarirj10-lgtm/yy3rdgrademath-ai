@@ -115,7 +115,7 @@ const TopicQuiz = () => {
 
   useEffect(() => {
     if (topicName) fetchQuestions();
-  }, [slug]);
+  }, [slug, customName]);
 
   if (!topicName) {
     return (
