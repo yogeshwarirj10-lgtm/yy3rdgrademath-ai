@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { categories } from "@/data/topics";
 import { topicTips } from "@/data/topicTips";
 
@@ -27,6 +27,7 @@ interface Question {
 
 const TopicQuiz = () => {
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,19 +38,30 @@ const TopicQuiz = () => {
   const [answered, setAnswered] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Find the topic and category
+  // Find the topic and category — support custom topics via ?name= query param
+  const isCustom = slug === "custom";
+  const customName = searchParams.get("name") || "";
+
   let topicName = "";
   let categoryName = "";
   let categoryEmoji = "";
   let categoryBg = "";
-  for (const cat of categories) {
-    const found = cat.topics.find((t) => t.slug === slug);
-    if (found) {
-      topicName = found.name;
-      categoryName = cat.name;
-      categoryEmoji = cat.emoji;
-      categoryBg = cat.bgClass;
-      break;
+
+  if (isCustom && customName) {
+    topicName = customName;
+    categoryName = "Custom Topic";
+    categoryEmoji = "🔍";
+    categoryBg = "bg-primary";
+  } else {
+    for (const cat of categories) {
+      const found = cat.topics.find((t) => t.slug === slug);
+      if (found) {
+        topicName = found.name;
+        categoryName = cat.name;
+        categoryEmoji = cat.emoji;
+        categoryBg = cat.bgClass;
+        break;
+      }
     }
   }
 
@@ -103,7 +115,7 @@ const TopicQuiz = () => {
 
   useEffect(() => {
     if (topicName) fetchQuestions();
-  }, [slug]);
+  }, [slug, customName]);
 
   if (!topicName) {
     return (

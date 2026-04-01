@@ -268,7 +268,16 @@ const Index = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-center text-sm text-muted-foreground py-8">No topics match "{searchQuery}"</p>
+              <div className="text-center py-8 space-y-3">
+                <p className="text-sm text-muted-foreground">No predefined topic matches "{searchQuery}"</p>
+                <Button
+                  onClick={() => navigate(`/topic/custom?name=${encodeURIComponent(searchQuery.trim())}`)}
+                  className="gap-2"
+                >
+                  <Zap size={14} />
+                  Generate Quiz for "{searchQuery.trim()}"
+                </Button>
+              </div>
             )
           ) : (
             <>
