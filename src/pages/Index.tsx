@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { categories } from "@/data/topics";
 import CategoryCard from "@/components/CategoryCard";
 import {
   BookOpen, LayoutGrid, Target, FileText, LogOut, Zap,
   Home, Brain, BarChart3, Infinity, GraduationCap, Sparkles,
-  AlertTriangle, Mail
+  AlertTriangle, Mail, Search
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
