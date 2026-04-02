@@ -150,7 +150,42 @@ serve(async (req) => {
     const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
     if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY is not configured");
 
+    // Validate that the topic is math-related (only for custom/unknown topics)
     const standard = topicStandardsMap[topic] || "";
+    if (!standard) {
+      // For custom topics not in our predefined list, validate with a quick check
+      const mathKeywords = [
+        "math", "number", "add", "subtract", "multiply", "divide", "fraction", "decimal",
+        "geometry", "angle", "shape", "area", "perimeter", "volume", "measurement", "measure",
+        "graph", "data", "pattern", "algebra", "equation", "place value", "rounding",
+        "estimation", "time", "clock", "money", "symmetry", "triangle", "rectangle",
+        "square", "circle", "polygon", "line", "parallel", "perpendicular", "digit",
+        "sum", "difference", "product", "quotient", "factor", "multiple", "prime",
+        "even", "odd", "integer", "whole number", "mixed number", "improper",
+        "numerator", "denominator", "ratio", "percent", "percentage", "probability",
+        "statistics", "mean", "median", "mode", "range", "average", "coordinate",
+        "exponent", "power", "root", "square root", "cube", "prism", "cylinder",
+        "sphere", "cone", "pyramid", "vertex", "edge", "face", "congruent", "similar",
+        "transformation", "reflection", "rotation", "translation", "scale",
+        "proportion", "rate", "unit", "conversion", "metric", "customary",
+        "weight", "mass", "capacity", "length", "width", "height", "diameter", "radius",
+        "circumference", "pi", "theorem", "formula", "variable", "expression",
+        "inequality", "function", "slope", "intercept", "linear", "quadratic",
+        "arithmetic", "calculation", "compute", "solve", "word problem", "counting",
+        "tally", "pictograph", "bar graph", "dot plot", "stem", "leaf", "chart",
+        "table", "sequence", "series", "set", "venn", "diagram", "roman numeral",
+        "ordinal", "cardinal", "negative", "positive", "absolute value", "number line",
+        "commutative", "associative", "distributive", "identity", "inverse", "operation"
+      ];
+      const topicLower = topic.toLowerCase();
+      const isMathRelated = mathKeywords.some(kw => topicLower.includes(kw));
+      if (!isMathRelated) {
+        return new Response(
+          JSON.stringify({ error: "This topic does not appear to be math-related. Please enter a math concept (e.g., Fractions, Geometry, Multiplication)." }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+    }
 
     const systemPrompt = `You are a certified New Jersey mathematics assessment specialist and NJSLA (New Jersey Student Learning Assessment) item writer. You have authored items for the official NJSLA-M Grade 3 exam administered by NJ DOE / Pearson.
 
