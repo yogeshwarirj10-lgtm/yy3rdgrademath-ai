@@ -99,7 +99,8 @@ const TopicQuiz = () => {
 
       const data = await response.json().catch(() => null);
       if (!response.ok) {
-        if (response.status === 403) throw new Error(data?.error || "Access denied");
+        if (data?.error) throw new Error(data.error);
+        if (response.status === 403) throw new Error("Access denied");
         throw new Error("Our servers are busy right now. Please try again in a few minutes.");
       }
       if (data?.error) throw new Error(data.error);
