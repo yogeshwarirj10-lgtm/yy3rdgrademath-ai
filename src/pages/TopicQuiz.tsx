@@ -220,9 +220,9 @@ const TopicQuiz = () => {
               <AlertTriangle size={28} className="text-destructive" />
             </div>
             <p className="text-destructive font-semibold">{errorMessage}</p>
-            <Button onClick={() => { setErrorMessage(""); fetchQuestions(); }} className="gap-2 mt-2">
-              <RefreshCw size={14} />
-              Try Again
+            <Button onClick={() => navigate("/topics")} className="gap-2 mt-2">
+              <ArrowLeft size={14} />
+              Go Back to Topics
             </Button>
           </div>
         ) : isComplete ? (
