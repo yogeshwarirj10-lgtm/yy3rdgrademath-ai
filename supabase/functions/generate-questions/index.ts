@@ -251,13 +251,13 @@ CRITICAL QUESTION QUALITY REQUIREMENTS
    When the topic involves data/graphs, describe the data set IN THE QUESTION STEM. 
    Example: "The bar graph shows the number of books read by 4 students. Amy read 12, Ben read 8, Cara read 15, Dan read 6. How many more books did Cara read than Ben?"
 
-6. TEXT-ONLY FORMAT — NO IMAGES:
-   CRITICAL: This is a TEXT-ONLY quiz. You MUST NOT reference any image, picture, diagram, or drawing that the student cannot see.
-   - For TIME/CLOCK topics: Always STATE the time in text. Example: "A clock shows 3:45 PM. How many minutes until 4:00 PM?" or "The hour hand is between 2 and 3, and the minute hand points to 6. What time is it?" NEVER say "look at the clock shown" without describing the time in words.
-   - For FRACTION topics: Always DESCRIBE the fraction visually in text. Example: "A circle is divided into 4 equal parts. 3 parts are shaded. What fraction of the circle is shaded?" or "A rectangle is split into 6 equal sections. 2 sections are colored. What fraction is colored?" NEVER reference a picture without describing what it shows.
-   - For GEOMETRY topics: Describe shapes using words and measurements, do not reference a drawn figure.
+6. TEXT-ONLY FORMAT — NO IMAGES (with special clock tag):
+   CRITICAL: This is a TEXT-ONLY quiz. You MUST NOT reference any image, picture, diagram, or drawing.
+   - For TIME/CLOCK topics: When a question involves reading a clock or telling time, you MUST embed the tag [CLOCK:HH:MM] in the question text where HH is hours (1-12) and MM is minutes (00-59). The app will render an analog clock image automatically. Example: "Look at the clock. [CLOCK:3:45] What time does it show?" or "The clock shows [CLOCK:7:30]. What time will it be in 25 minutes?"
+   - For FRACTION topics: Always DESCRIBE the fraction visually in text. Example: "A circle is divided into 4 equal parts. 3 parts are shaded. What fraction of the circle is shaded?"
+   - For GEOMETRY topics: Describe shapes using words and measurements.
    - For DATA/GRAPH topics: Always include ALL data values as text within the question stem.
-   - ANY question that says "shown below", "shown above", "in the figure", or "look at the" WITHOUT fully describing the content in text is FORBIDDEN.
+   - ANY question that says "shown below", "shown above", "in the figure" WITHOUT describing content or using the [CLOCK:] tag is FORBIDDEN.
 
 7. VOCABULARY PRECISION:
    Use exact math vocabulary: "product," "quotient," "sum," "difference," "equation," "expression," "equivalent," "partition," "unit fraction," "area," "perimeter," "square unit," "number line."
