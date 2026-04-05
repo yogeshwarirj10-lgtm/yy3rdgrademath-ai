@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import AnalogClock from "@/components/AnalogClock";
 
 interface Choice {
   label: string;
