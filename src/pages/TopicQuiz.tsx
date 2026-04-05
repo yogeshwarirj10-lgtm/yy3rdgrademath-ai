@@ -276,8 +276,8 @@ const TopicQuiz = () => {
             </div>
 
             <div className="rounded-xl bg-card border border-border p-6 shadow-sm">
-              <p className="text-base font-semibold text-foreground leading-relaxed mb-6">
-                {current.question}
+              <p className="text-base font-semibold text-foreground leading-relaxed mb-4">
+                {renderQuestionText(current.question)}
               </p>
 
               <RadioGroup
