@@ -251,12 +251,13 @@ CRITICAL QUESTION QUALITY REQUIREMENTS
    When the topic involves data/graphs, describe the data set IN THE QUESTION STEM. 
    Example: "The bar graph shows the number of books read by 4 students. Amy read 12, Ben read 8, Cara read 15, Dan read 6. How many more books did Cara read than Ben?"
 
-6. NO IMAGES OR VISUAL AIDS:
-   CRITICAL: This is a TEXT-ONLY quiz. You MUST NOT generate any question that requires the student to look at an image, picture, diagram, clock face, graph drawing, or any visual that cannot be represented as plain text.
-   - For TIME/CLOCK topics: NEVER ask "What time does the clock show?" or reference a clock image. Instead, ask word problems about elapsed time, time calculations, or converting between formats. Example: "A movie starts at 2:15 PM and lasts 1 hour and 30 minutes. What time does the movie end?"
+6. TEXT-ONLY FORMAT — NO IMAGES:
+   CRITICAL: This is a TEXT-ONLY quiz. You MUST NOT reference any image, picture, diagram, or drawing that the student cannot see.
+   - For TIME/CLOCK topics: Always STATE the time in text. Example: "A clock shows 3:45 PM. How many minutes until 4:00 PM?" or "The hour hand is between 2 and 3, and the minute hand points to 6. What time is it?" NEVER say "look at the clock shown" without describing the time in words.
+   - For FRACTION topics: Always DESCRIBE the fraction visually in text. Example: "A circle is divided into 4 equal parts. 3 parts are shaded. What fraction of the circle is shaded?" or "A rectangle is split into 6 equal sections. 2 sections are colored. What fraction is colored?" NEVER reference a picture without describing what it shows.
    - For GEOMETRY topics: Describe shapes using words and measurements, do not reference a drawn figure.
    - For DATA/GRAPH topics: Always include ALL data values as text within the question stem.
-   - ANY question that says "shown below", "shown above", "in the figure", "on the clock", "look at the", or similar visual references is FORBIDDEN.
+   - ANY question that says "shown below", "shown above", "in the figure", or "look at the" WITHOUT fully describing the content in text is FORBIDDEN.
 
 7. VOCABULARY PRECISION:
    Use exact math vocabulary: "product," "quotient," "sum," "difference," "equation," "expression," "equivalent," "partition," "unit fraction," "area," "perimeter," "square unit," "number line."
