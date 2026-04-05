@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import AnalogClock from "@/components/AnalogClock";
 
 interface Choice {
   label: string;
@@ -132,6 +133,28 @@ const TopicQuiz = () => {
   }
 
   const current = questions[currentIdx];
+  const renderQuestionText = (text: string) => {
+    const clockRegex = /\[CLOCK:(\d{1,2}):(\d{2})\]/g;
+    const parts: (string | JSX.Element)[] = [];
+    let lastIndex = 0;
+    let match;
+    while ((match = clockRegex.exec(text)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(text.slice(lastIndex, match.index));
+      }
+      parts.push(
+        <span key={match.index} className="inline-flex justify-center my-2">
+          <AnalogClock hours={parseInt(match[1])} minutes={parseInt(match[2])} size={140} />
+        </span>
+      );
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < text.length) {
+      parts.push(text.slice(lastIndex));
+    }
+    return parts.length > 1 ? <>{parts}</> : text;
+  };
+
   const isComplete = answered === questions.length && questions.length > 0;
 
   const handleSubmit = () => {
@@ -275,8 +298,8 @@ const TopicQuiz = () => {
             </div>
 
             <div className="rounded-xl bg-card border border-border p-6 shadow-sm">
-              <p className="text-base font-semibold text-foreground leading-relaxed mb-6">
-                {current.question}
+              <p className="text-base font-semibold text-foreground leading-relaxed mb-4">
+                {renderQuestionText(current.question)}
               </p>
 
               <RadioGroup
