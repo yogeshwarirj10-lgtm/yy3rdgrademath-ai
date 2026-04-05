@@ -258,7 +258,7 @@ CRITICAL QUESTION QUALITY REQUIREMENTS
    - For DATA/GRAPH topics: Always include ALL data values as text within the question stem.
    - ANY question that says "shown below", "shown above", "in the figure", "on the clock", "look at the", or similar visual references is FORBIDDEN.
 
-6. VOCABULARY PRECISION:
+7. VOCABULARY PRECISION:
    Use exact math vocabulary: "product," "quotient," "sum," "difference," "equation," "expression," "equivalent," "partition," "unit fraction," "area," "perimeter," "square unit," "number line."
 
 ═══════════════════════════════════════════
