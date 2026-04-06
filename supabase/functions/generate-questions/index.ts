@@ -458,9 +458,27 @@ Include at least ${Math.max(2, Math.round(count * 0.3))} two-step problems and a
 
     const data = await response.json();
     const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
-    if (!toolCall) throw new Error("No tool call in response");
+    let questions: any;
 
-    const questions = JSON.parse(toolCall.function.arguments);
+    if (toolCall) {
+      questions = JSON.parse(toolCall.function.arguments);
+    } else {
+      // Fallback: try to parse questions from the message content
+      const content = data.choices?.[0]?.message?.content || "";
+      console.warn("No tool call in response, attempting to parse content fallback");
+      try {
+        // Try to extract JSON from content (may be wrapped in markdown code blocks)
+        const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/) || [null, content];
+        const parsed = JSON.parse(jsonMatch[1].trim());
+        questions = parsed.questions ? parsed : { questions: Array.isArray(parsed) ? parsed : [] };
+      } catch {
+        console.error("Failed to parse content as JSON:", content.substring(0, 500));
+        throw new Error("Failed to generate questions. Please try again.");
+      }
+      if (!questions.questions || questions.questions.length === 0) {
+        throw new Error("Failed to generate questions. Please try again.");
+      }
+    }
 
     // Log token usage
     const usage = data.usage;
