@@ -32,30 +32,33 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Find user by email using filter instead of listing all users
-    const { data, error: listError } = await supabaseAdmin.auth.admin.listUsers({
-      page: 1,
-      perPage: 1,
-    });
+    const normalizedEmail = email.trim().toLowerCase();
 
-    if (listError) throw listError;
+    // Paginate through all users to find the one with matching email
+    let user = null;
+    let page = 1;
+    const perPage = 100;
 
-    // Search through users with email match - use a more targeted approach
-    let user = data.users.find((u) => u.email === email);
-
-    // If not found in first page, search with larger page
-    if (!user) {
-      const { data: allData, error: allError } = await supabaseAdmin.auth.admin.listUsers({
-        page: 1,
-        perPage: 1000,
+    while (!user) {
+      const { data, error: listError } = await supabaseAdmin.auth.admin.listUsers({
+        page,
+        perPage,
       });
-      if (allError) throw allError;
-      user = allData.users.find((u) => u.email === email);
+
+      if (listError) throw listError;
+
+      if (!data.users || data.users.length === 0) break;
+
+      user = data.users.find((u) => u.email?.toLowerCase() === normalizedEmail);
+
+      if (data.users.length < perPage) break; // last page
+      page++;
     }
 
     if (!user) {
+      // Return 200 with error field so the frontend can handle it gracefully
       return new Response(JSON.stringify({ error: "No account found with this email" }), {
-        status: 404,
+        status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
