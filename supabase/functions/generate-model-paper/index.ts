@@ -117,16 +117,19 @@ serve(async (req) => {
       userId = user?.id || null;
     }
 
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: "Authentication required. Please sign in." }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Check token limit per user
-    const supabaseCheck = createClient(
+    const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
-    let usageQuery = supabaseCheck.from("ai_token_usage").select("total_tokens");
-    if (userId) {
-      usageQuery = usageQuery.eq("user_id", userId);
-    }
-    const { data: usageRows } = await usageQuery;
+    const { data: usageRows } = await supabaseAdmin.from("ai_token_usage").select("total_tokens").eq("user_id", userId);
     const currentTotal = (usageRows || []).reduce((s: number, r: any) => s + (r.total_tokens || 0), 0);
     if (currentTotal >= 5_000_000) {
       return new Response(
@@ -295,8 +298,26 @@ Return using the generate_questions tool. Include the "type" and "points" fields
       if (!toolCall) throw new Error("No tool call in response for " + unit.title);
 
       const result = JSON.parse(toolCall.function.arguments);
-      // Renumber questions with startId offset
       const questions = (result.questions || []).map((q: any, i: number) => ({ ...q, id: startId + i }));
+
+      // Log token usage for full exam unit
+      const usage = data.usage;
+      if (usage) {
+        try {
+          await supabaseAdmin.from("ai_token_usage").insert({
+            user_id: userId,
+            topic: unit.title,
+            category: "Model Paper",
+            model: data.model || "gemini-2.5-flash",
+            input_tokens: usage.prompt_tokens || 0,
+            output_tokens: usage.completion_tokens || 0,
+            total_tokens: usage.total_tokens || 0,
+            question_count: questions.length,
+          });
+        } catch (logErr) {
+          console.error("Failed to log token usage:", logErr);
+        }
+      }
 
       return new Response(
         JSON.stringify({
@@ -450,6 +471,25 @@ Return using the generate_questions tool.`;
     if (!toolCall) throw new Error("No tool call in response");
 
     const result = JSON.parse(toolCall.function.arguments);
+
+    // Log token usage for single unit mode
+    const usage = data.usage;
+    if (usage) {
+      try {
+        await supabaseAdmin.from("ai_token_usage").insert({
+          user_id: userId,
+          topic: blueprint.title,
+          category: "Model Paper",
+          model: data.model || "gemini-2.5-flash",
+          input_tokens: usage.prompt_tokens || 0,
+          output_tokens: usage.completion_tokens || 0,
+          total_tokens: usage.total_tokens || 0,
+          question_count: result.questions?.length || totalQuestions,
+        });
+      } catch (logErr) {
+        console.error("Failed to log token usage:", logErr);
+      }
+    }
 
     return new Response(
       JSON.stringify({ unit: blueprint.title, unitIndex, ...result }),
