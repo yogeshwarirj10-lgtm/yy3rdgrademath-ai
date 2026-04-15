@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { generateModelPaperPdf } from "@/lib/generateModelPaperPdf";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Choice { label: string; text: string; }
 interface Question {
