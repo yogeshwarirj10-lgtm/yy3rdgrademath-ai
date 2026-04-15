@@ -50,6 +50,16 @@ const FULL_EXAM_INFO = {
 const TIMER_SECONDS = 40 * 60; // 40 minutes per unit
 const FULL_EXAM_TIMER = 180 * 60; // 180 minutes for full exam (3 units × 60 min)
 
+async function getAuthHeaders() {
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
+  if (!token) throw new Error("Please sign in to continue.");
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+}
+
 function formatTime(seconds: number) {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
