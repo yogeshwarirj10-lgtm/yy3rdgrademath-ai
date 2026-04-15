@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { generateModelPaperPdf } from "@/lib/generateModelPaperPdf";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Choice { label: string; text: string; }
 interface Question {
@@ -48,6 +49,16 @@ const FULL_EXAM_INFO = {
 
 const TIMER_SECONDS = 40 * 60; // 40 minutes per unit
 const FULL_EXAM_TIMER = 180 * 60; // 180 minutes for full exam (3 units × 60 min)
+
+async function getAuthHeaders() {
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
+  if (!token) throw new Error("Please sign in to continue.");
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  };
+}
 
 function formatTime(seconds: number) {
   const m = Math.floor(seconds / 60);
@@ -135,14 +146,12 @@ const ModelPaper = () => {
     setUnitStatuses(newStatuses);
 
     try {
+      const headers = await getAuthHeaders();
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-model-paper`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers,
           body: JSON.stringify({ unitIndex }),
         }
       );
@@ -206,14 +215,12 @@ const ModelPaper = () => {
     // Otherwise generate first, then download
     setPdfLoading(unitIndex);
     try {
+      const headers = await getAuthHeaders();
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-model-paper`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers,
           body: JSON.stringify({ unitIndex }),
         }
       );
@@ -247,14 +254,12 @@ const ModelPaper = () => {
     let startId = 1;
 
     const fetchUnit = async (unitIdx: number, retries = 2): Promise<any> => {
+      const headers = await getAuthHeaders();
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-model-paper`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers,
           body: JSON.stringify({ fullExam: true, fullExamUnit: unitIdx, startId }),
         }
       );
