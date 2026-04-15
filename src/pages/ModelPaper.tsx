@@ -146,14 +146,12 @@ const ModelPaper = () => {
     setUnitStatuses(newStatuses);
 
     try {
+      const headers = await getAuthHeaders();
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-model-paper`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers,
           body: JSON.stringify({ unitIndex }),
         }
       );
@@ -217,14 +215,12 @@ const ModelPaper = () => {
     // Otherwise generate first, then download
     setPdfLoading(unitIndex);
     try {
+      const headers = await getAuthHeaders();
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-model-paper`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers,
           body: JSON.stringify({ unitIndex }),
         }
       );
@@ -258,14 +254,12 @@ const ModelPaper = () => {
     let startId = 1;
 
     const fetchUnit = async (unitIdx: number, retries = 2): Promise<any> => {
+      const headers = await getAuthHeaders();
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-model-paper`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers,
           body: JSON.stringify({ fullExam: true, fullExamUnit: unitIdx, startId }),
         }
       );
