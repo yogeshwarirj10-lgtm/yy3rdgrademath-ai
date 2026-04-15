@@ -487,12 +487,7 @@ Include at least ${Math.max(2, Math.round(count * 0.3))} two-step problems and a
     const usage = data.usage;
     if (usage) {
       try {
-        const supabaseAdmin = createClient(
-          Deno.env.get("SUPABASE_URL")!,
-          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-        );
-
-        // userId already extracted at the top of the request
+        // supabaseAdmin already created above for token limit check
 
         await supabaseAdmin.from("ai_token_usage").insert({
           user_id: userId,
