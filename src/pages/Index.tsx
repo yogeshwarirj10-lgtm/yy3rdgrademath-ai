@@ -36,7 +36,8 @@ const Index = () => {
   }, []);
 
   const filteredTopics = useMemo(() => {
-    if (!searchQuery.trim()) return [];
+    if (!searchQuery) return [];
+    if (!searchQuery.trim()) return allTopics;
     const q = searchQuery.toLowerCase();
     return allTopics.filter(
       (t) => t.name.toLowerCase().includes(q) || t.categoryName.toLowerCase().includes(q)
@@ -281,7 +282,18 @@ const Index = () => {
             )
           ) : (
             <>
-              <h2 className="text-lg font-bold text-foreground mb-1">Select a Category</h2>
+              <div className="flex items-center justify-between mb-1">
+                <h2 className="text-lg font-bold text-foreground">Select a Category</h2>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5 rounded-xl text-xs"
+                  onClick={() => setSearchQuery(" ")}
+                >
+                  <LayoutGrid size={14} />
+                  All Topics
+                </Button>
+              </div>
               <p className="text-sm text-muted-foreground mb-4">
                 Choose a domain to explore topics and generate practice quizzes.
               </p>
