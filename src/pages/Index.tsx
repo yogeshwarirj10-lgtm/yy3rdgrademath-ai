@@ -36,7 +36,8 @@ const Index = () => {
   }, []);
 
   const filteredTopics = useMemo(() => {
-    if (!searchQuery.trim()) return [];
+    if (!searchQuery) return [];
+    if (!searchQuery.trim()) return allTopics;
     const q = searchQuery.toLowerCase();
     return allTopics.filter(
       (t) => t.name.toLowerCase().includes(q) || t.categoryName.toLowerCase().includes(q)
