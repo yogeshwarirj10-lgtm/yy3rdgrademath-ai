@@ -128,16 +128,19 @@ serve(async (req) => {
       userId = user?.id || null;
     }
 
+    if (!userId) {
+      return new Response(
+        JSON.stringify({ error: "Authentication required. Please sign in." }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Check token limit per user
-    const supabaseCheck = createClient(
+    const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
-    let usageQuery = supabaseCheck.from("ai_token_usage").select("total_tokens");
-    if (userId) {
-      usageQuery = usageQuery.eq("user_id", userId);
-    }
-    const { data: usageRows } = await usageQuery;
+    const { data: usageRows } = await supabaseAdmin.from("ai_token_usage").select("total_tokens").eq("user_id", userId);
     const currentTotal = (usageRows || []).reduce((s: number, r: any) => s + (r.total_tokens || 0), 0);
     if (currentTotal >= 5_000_000) {
       return new Response(
